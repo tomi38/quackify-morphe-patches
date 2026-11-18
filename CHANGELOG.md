@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/tomi38/quackify-morphe-patches/compare/v1.0.1...v1.1.0) (2026-11-18)
+
+### ✨ New Features
+
+* themed launcher icon ([4f84e17](https://github.com/tomi38/quackify-morphe-patches/commit/4f84e17629d7eb2938c815bad045f01bff22557f))
+
 ## [1.0.1](https://github.com/tomi38/quackify-morphe-patches/compare/v1.0.0...v1.0.1) (2026-11-18)
 
 ### 🐛 Bug Fixes
