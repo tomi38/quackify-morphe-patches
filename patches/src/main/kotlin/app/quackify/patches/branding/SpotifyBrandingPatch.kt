@@ -5,7 +5,6 @@ import app.morphe.patcher.patch.AppTarget
 import app.morphe.patcher.patch.Compatibility
 import app.morphe.patcher.patch.resourcePatch
 import org.w3c.dom.Element
-import java.io.File
 import kotlin.math.roundToInt
 
 private const val ANDROID_NAMESPACE = "http://schemas.android.com/apk/res/android"
@@ -163,21 +162,24 @@ val spotifyBrandingPatch = resourcePatch(
         replace("res/drawable/ic_stat_duck.xml", spotifyNotification)
 
         // The widgets' fallback cover (logo_duck) is a layer-list around @mipmap/ic_launcher, so it follows.
+        // Resources are decoded on request, so a res/ directory listing would be empty: ask the patcher
+        // for the WebP paths instead, and replace them without decoding the originals.
         var replacedForeground = false
-        get("res").listFiles { file -> file.isDirectory && file.name.startsWith("mipmap-") }
-            .orEmpty()
-            .forEach { directory ->
-                val density = directory.name.split('-').firstNotNullOfOrNull { DENSITIES[it] }
-                    ?: return@forEach
+        listDecodableFiles("res/mipmap-*/*.webp").forEach { path ->
+            val name = path.substringAfterLast('/').removeSuffix(".webp")
+            val icon = RASTER_ICONS[name] ?: return@forEach
+            val density = path.substringBeforeLast('/').substringAfterLast('/')
+                .split('-').firstNotNullOfOrNull { DENSITIES[it] }
+                ?: return@forEach
 
-                RASTER_ICONS.forEach { (name, icon) ->
-                    val file = File(directory, "$name.webp")
-                    if (!file.exists()) return@forEach
-
-                    file.writeBytes(bundledPng(icon.kind, (icon.baseDp * density).roundToInt()))
-                    if (name == "ic_launcher_foreground") replacedForeground = true
-                }
-            }
-        check(replacedForeground) { "Quackify launcher foreground icons were not found" }
+            val file = get(path, copy = false)
+            file.parentFile?.mkdirs()
+            file.writeBytes(bundledPng(icon.kind, (icon.baseDp * density).roundToInt()))
+            if (name == "ic_launcher_foreground") replacedForeground = true
+        }
+        check(replacedForeground) {
+            "Quackify launcher foreground icons were not found (mipmap files: " +
+                listDecodableFiles("res/mipmap*/**").joinToString() + ")"
+        }
     }
 }
