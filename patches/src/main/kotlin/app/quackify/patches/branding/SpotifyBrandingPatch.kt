@@ -42,6 +42,22 @@ private val spotifyBackground = """
     </vector>
 """.trimIndent() + "\n"
 
+// Android 13+ themed icon layer: the mark alone, which the launcher tints to the wallpaper colors.
+private val spotifyMonochrome = """
+    <?xml version="1.0" encoding="utf-8"?>
+    <vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="108dp"
+        android:height="108dp"
+        android:viewportWidth="108"
+        android:viewportHeight="108">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="$SPOTIFY_MARK_PATH" />
+    </vector>
+""".trimIndent() + "\n"
+
+private const val MONOCHROME_DRAWABLE = "spotify_monochrome"
+
 private val spotifyNotification = """
     <?xml version="1.0" encoding="utf-8"?>
     <vector xmlns:android="http://schemas.android.com/apk/res/android"
@@ -103,7 +119,7 @@ private fun bundledPng(kind: String, px: Int): ByteArray {
 @Suppress("unused")
 val spotifyBrandingPatch = resourcePatch(
     name = "Spotify branding",
-    description = "Renames Quackify to Spotify and replaces the launcher (both icon choices), splash, widget and notification icons with the Spotify mark.",
+    description = "Renames Quackify to Spotify and replaces the launcher (both icon choices, plus the Android 13+ themed icon), splash, widget and notification icons with the Spotify mark.",
     default = true,
 ) {
     compatibleWith(quackifyStandard, quackifySpotify, quackifyApple)
@@ -157,6 +173,31 @@ val spotifyBrandingPatch = resourcePatch(
 
         // Adaptive icon background (the orange gradient) becomes black; the foreground is a raster below.
         replace("res/drawable/ic_launcher_background.xml", spotifyBackground)
+
+        // Themed icon: Quackify's adaptive icons have no monochrome layer, so add a new drawable and
+        // reference it from every adaptive launcher icon (ic_launcher / ic_launcher_round).
+        get("res/drawable/$MONOCHROME_DRAWABLE.xml", copy = false).apply {
+            parentFile?.mkdirs()
+            writeText(spotifyMonochrome)
+        }
+        var addedMonochrome = false
+        listDecodableFiles("res/mipmap-anydpi*/*.xml").forEach { path ->
+            document(path).use { icon ->
+                val adaptiveIcon = icon.documentElement
+                if (adaptiveIcon.tagName != "adaptive-icon") return@use
+
+                val existing = adaptiveIcon.getElementsByTagName("monochrome")
+                (0 until existing.length).mapNotNull { existing.item(it) }.forEach { adaptiveIcon.removeChild(it) }
+
+                adaptiveIcon.appendChild(
+                    icon.createElement("monochrome").apply {
+                        setAttributeNS(ANDROID_NAMESPACE, "android:drawable", "@drawable/$MONOCHROME_DRAWABLE")
+                    },
+                )
+                addedMonochrome = true
+            }
+        }
+        check(addedMonochrome) { "Quackify adaptive launcher icons were not found" }
 
         // Media playback notification status bar icon.
         replace("res/drawable/ic_stat_duck.xml", spotifyNotification)
