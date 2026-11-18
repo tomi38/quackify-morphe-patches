@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/tomi38/quackify-morphe-patches/compare/v1.0.0...v1.0.1) (2026-11-18)
+
+### 🐛 Bug Fixes
+
+* find launcher WebP icons when resources are decoded on request ([850b3ff](https://github.com/tomi38/quackify-morphe-patches/commit/850b3ff4c2f3d4af562628f8d31f5f8bb61bc43d))
+
 ## 1.0.0 (2026-11-18)
 
 ### 🐛 Bug Fixes
