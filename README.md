@@ -25,9 +25,37 @@ The `spotify` and `apple` flavors reuse those apps' package names, so Morphe Man
 ## Patches
 
 <!-- PATCHES_START EXPANDED -->
-| 💊&nbsp;Patch | 📜&nbsp;Description |
-|----------|----------------|
-| Spotify branding | Renames Quackify to Spotify and replaces the launcher (both icon choices), splash, widget and notification icons with the Spotify mark. |
+> **[v1.0.0](https://github.com/tomi38/quackify-morphe-patches/releases/tag/v1.0.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;3 patches total
+<details open>
+<summary>📦 Quackify&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Spotify branding](#spotify-branding) | Renames Quackify to Spotify and replaces the launcher (both icon choices), splash, widget and notification icons with the Spotify mark. |  |
+
+</details>
+
+<details open>
+<summary>📦 Quackify (Spotify package)&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Spotify branding](#spotify-branding) | Renames Quackify to Spotify and replaces the launcher (both icon choices), splash, widget and notification icons with the Spotify mark. |  |
+
+</details>
+
+<details open>
+<summary>📦 Quackify (Apple Music package)&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Spotify branding](#spotify-branding) | Renames Quackify to Spotify and replaces the launcher (both icon choices), splash, widget and notification icons with the Spotify mark. |  |
+
+</details>
+
 <!-- PATCHES_END -->
 
 ## Building
